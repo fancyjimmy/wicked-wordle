@@ -1,59 +1,65 @@
 <template>
-<div class="bar">
-  <h5>{{name}}</h5>
-  <div class="bar-container">
-    <div class="value" :style="styles" :class="[isMax?'maxed':'']">{{value}}</div>
+  <div class="bar">
+    <h5 class="name">{{ name }}</h5>
+    <div class="bar-container">
+      <div class="value" :style="styles" :class="[isMax ? 'maxed' : '']">
+        {{ value }}
+      </div>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
 export default {
   name: `Bar`,
-  props:{
+  props: {
     value: Number,
     maxValue: Number,
-    name: String
+    name: String,
   },
   computed: {
-    styles(){
-      return{
-        "width": `${(this.value / this.maxValue ) * 100}%`,
+    styles() {
+      return {
+        width: `${(this.value / this.maxValue) * 100}%`,
       };
     },
-    isMax(){
+    isMax() {
       return this.value === this.maxValue && this.maxValue != 0;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
-.bar{
+.bar {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 9fr;
+  justify-content: center;
+  align-items: center;
 }
 
-.value{
+.value {
   left: 0;
   margin: 0;
   text-align: right;
-  padding: 5px;
+  padding: 3px;
   border-radius: 5px;
 }
-.value{
+.value {
   background: #818384;
+  padding-right: 5px;
+  min-width: 1em;
 }
-.maxed{
+.maxed {
   background: #538d4e;
 }
 
-
-
-.bar-container{
+.bar-container {
   width: 100%;
-  height: 20px;
 }
 
+.name {
+  margin: 10px;
+}
 </style>

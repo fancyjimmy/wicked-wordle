@@ -1,7 +1,7 @@
 <template>
   <div class="keyboard">
     <div class="row" v-for="row in rows" :key="row">
-      <button
+      <div
         class="letter"
         v-for="letter in row"
         :key="letter"
@@ -9,7 +9,7 @@
         :class="status(letter)"
       >
         {{ letter }}
-      </button>
+      </div>
     </div>
   </div>
 </template>
@@ -80,6 +80,15 @@ export default {
   cursor: pointer;
   transition: background 0.15s;
 }
+
+.letter:hover,
+.letter:focus {
+  transform: scale(1.05);
+  filter: brightness(1.2);
+  box-shadow: 0 0 1em black;
+  transition: filter 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
 .keyboard {
   max-width: 500px;
   margin: auto;

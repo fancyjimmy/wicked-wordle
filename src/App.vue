@@ -3,10 +3,10 @@
     <div class="board">
       <div v-for="index in maxGuesses" :key="index">
         <Line
-            :length="wordLength"
-            :word="word"
-            :guess="lowerGuesses[index - 1]"
-            :finished="isCurrent(index)"
+          :length="wordLength"
+          :word="word"
+          :guess="lowerGuesses[index - 1]"
+          :finished="isCurrent(index)"
         />
       </div>
     </div>
@@ -14,19 +14,25 @@
 
   <div class="keyboard-wrapper">
     <Keyboard
-        @write="write"
-        :used="usedChars"
-        :contained="containedChars"
-        :matching="matchingChars"
+      @write="write"
+      :used="usedChars"
+      :contained="containedChars"
+      :matching="matchingChars"
     />
   </div>
 
-  <PopUp :show="false" :autoClose="false" ref="retry" :closable="false" :closeByOutisdeClick="false">
+  <PopUp
+    :show="false"
+    :autoClose="false"
+    ref="retry"
+    :closable="false"
+    :closeByOutisdeClick="false"
+  >
     <div>
       <p>Want to try Again?</p>
       <div
-          @click="reset"
-          style="
+        @click="reset"
+        style="
           font-weight: 800;
           font-size: 1.5rem;
           margin: auto;
@@ -38,22 +44,20 @@
       >
         ↺
       </div>
-
-      <Statistic/>
     </div>
   </PopUp>
 
   <PopUp
-      :show="false"
-      ref="invalid"
-      :closable="true"
-      :autoClose="true"
-      :autoCloseTime="2000"
+    :show="false"
+    ref="invalid"
+    :closable="true"
+    :autoClose="true"
+    :autoCloseTime="2000"
   >
     <p>Answer was invalid</p>
   </PopUp>
 
-  <PopUp :show="false" ref="failed" :closable="true" @closed="showRetry">
+  <PopUp :show="false" ref="failed" :closable="true" @closed="showStat">
     <p>
       Sorry your Guesses were wrong. The right answer would have been
       <span style="font-weight: 800; text-transform: uppercase">
@@ -62,13 +66,17 @@
     </p>
   </PopUp>
 
-  <PopUp :show="false" ref="won" :closable="true" @closed="showRetry">
+  <PopUp :show="false" ref="won" :closable="true" @closed="showStat">
     <p>
       Correct Answer!!!!
       <span style="font-weight: 800; text-transform: uppercase">
         {{ word }}...</span
       >
     </p>
+  </PopUp>
+
+  <PopUp :show="false" ref="statistic" :closable="true" @closed="showRetry">
+    <Statistic ref="stat" />
   </PopUp>
 
   <!--
@@ -131,7 +139,7 @@ export default {
     Line,
     Keyboard,
     PopUp,
-    Statistic
+    Statistic,
   },
   data() {
     return {
@@ -145,32 +153,38 @@ export default {
     };
   },
   methods: {
-    submit () {
+    win() {
+      this.currentLine++;
+      this.currentGuess = '';
+
+      this.$refs.won.display();
+
+      this.ended = true;
+      this.$refs.stat.wonWithXTurns(this.currentLine);
+    },
+    lose() {
+      this.ended = true;
+      this.$refs.failed.display();
+      this.$refs.stat.lost();
+    },
+    submit() {
       console.log(this.$refs);
 
       if (
-          this.currentGuess.length != this.wordLength ||
-          !wordList.words.includes(this.currentGuess)
+        this.currentGuess.length != this.wordLength ||
+        !wordList.words.includes(this.currentGuess)
       ) {
         this.$refs.invalid.display();
         return;
       }
 
-
-
       if (this.word === this.lowerGuesses[this.currentLine]) {
-        this.currentLine++;
-        this.currentGuess = '';
-
-        this.$refs.won.display();
-
-        this.ended = true;
+        this.win();
         return;
       }
 
       if (this.currentLine + 1 >= this.maxGuesses) {
-        this.ended = true;
-        this.$refs.failed.display();
+        this.lose();
       }
 
       this.currentGuess = '';
@@ -220,9 +234,13 @@ export default {
       this.guesses[this.currentLine] = this.currentGuess;
     },
     showRetry() {
-      setTimeout(() =>{
+      setTimeout(() => {
         this.$refs.retry.display();
-
+      }, 1000);
+    },
+    showStat() {
+      setTimeout(() => {
+        this.$refs.statistic.display();
       }, 1000);
     },
   },
@@ -233,8 +251,8 @@ export default {
     usedChars() {
       let a = [];
       this.lowerGuesses
-          .slice(0, this.currentLine)
-          .forEach((item) => (a = [...a, ...Array.from(item)]));
+        .slice(0, this.currentLine)
+        .forEach((item) => (a = [...a, ...Array.from(item)]));
       return [...new Set(a)];
     },
     containedChars() {
@@ -263,6 +281,8 @@ export default {
     document.body.addEventListener('keydown', (event) => {
       this.write(event.key.toLowerCase());
     });
+
+    console.log(this.word);
   },
 };
 </script>

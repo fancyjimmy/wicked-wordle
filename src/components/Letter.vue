@@ -19,6 +19,7 @@ export default {
         empty: this.letter === '',
         contains: this.state === 'contain' && this.finished,
         match: this.state === 'match' && this.finished,
+        finished: this.finished,
       };
     },
   },
@@ -27,6 +28,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+@keyframes blimp {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 $bg-time: 0.3s;
 $rotate-time: 0.6s;
 .guess {
@@ -48,13 +60,10 @@ $rotate-time: 0.6s;
   user-select: none;
   box-sizing: border-box;
 
-  transition: background $bg-time, font-size $bg-time,  transform $rotate-time;
+  transition: background $bg-time, font-size $bg-time, transform $rotate-time;
 
   transform-style: preserve-3d;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-}
-
-.guess:hover {
 }
 
 .guess::before {
@@ -69,6 +78,10 @@ $rotate-time: 0.6s;
 
 .match {
   background: #538d4e;
+}
+
+.finished {
+  animation: blimp $rotate-time;
 }
 
 .empty {
