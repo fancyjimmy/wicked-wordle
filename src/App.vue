@@ -38,6 +38,8 @@
       >
         ↺
       </div>
+
+      <Statistic/>
     </div>
   </PopUp>
 
@@ -119,6 +121,8 @@
 import Line from './components/Line.vue';
 import Keyboard from './components/Keyboard.vue';
 import PopUp from './components/PopUp.vue';
+import Statistic from './components/Statistic.vue';
+
 import wordList from './wordList.js';
 
 export default {
@@ -127,6 +131,7 @@ export default {
     Line,
     Keyboard,
     PopUp,
+    Statistic
   },
   data() {
     return {

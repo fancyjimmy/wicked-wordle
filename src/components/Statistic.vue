@@ -12,7 +12,7 @@
       </div>
       <div>
         <h4 class="stat">Win %</h4>
-        <h4 class="statvalue">{{ratio}}</h4>
+        <h4 class="statvalue">{{ratio}} %</h4>
       </div>
       <div>
         <h4 class="stat">Current Streak</h4>
@@ -29,9 +29,14 @@
 </template>
 
 <script>
+import Bar from './Bar.vue';
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Statistic",
+  components: {
+    Bar,
+  },
   props: {
     maxGuesses: {
       type: Number,
@@ -84,7 +89,7 @@ export default {
   },
   computed:{
     ratio(){
-      return Math.round(this.won / this.played) * 100;
+      return this.played == 0? 0 : Math.round(this.won / this.played) * 100;
     },
     most(){
       let max = 0;
@@ -94,10 +99,7 @@ export default {
       return max;
     },
     bars() {
-      let bars = [{
-        "name": "losses",
-        "total": this.distribution["losses"] || 0
-      }];
+      let bars = [];
       for (let i = 0; i < this.maxGuesses; i++) {
         let obj = {
           "name": (i+1),
@@ -105,6 +107,11 @@ export default {
         };
         bars.push(obj);
       }
+
+      bars.push({
+        "name": "losses",
+        "total": this.distribution["losses"] || 0
+      })
       return bars;
     }
   },
@@ -125,6 +132,27 @@ export default {
 .bar-container{
   display: flex;
   flex-direction: column;
+}
+
+.bar-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.stat-container{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+  }
 }
 
 </style>
